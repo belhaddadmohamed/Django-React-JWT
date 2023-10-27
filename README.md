@@ -1,2 +1,2 @@
-# Django-React-JWT
-Learn how t o use JWT
+# React-Django-JWT
+Learng how to use Json Web Tokens (JWT)
