@@ -15,7 +15,7 @@ export const AuthProvider = ({children}) => {
     // Callback function
     let [authTokens, setAuthTokens] = useState(() => localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null)
     let [user, setUser] =  useState(() => localStorage.getItem('authTokens') ? jwt_decode(localStorage.getItem('authTokens')) : null)
-    let [loading, setLoading] = useState(true)
+    let [loading, setLoading] = useState(true)      // In case of loading the page
     const navigate = useNavigate()
 
 
@@ -57,18 +57,20 @@ export const AuthProvider = ({children}) => {
     }
 
 
-    // Use 'Refresh Token' to get new 'access Token'
+    // Use 'Refresh Token' to get new 'access Token' (access Tokens edited to be expire after 4 minutes in the backend)
     const updateToken = async () => {
         console.log('Update Token')
+
         let response = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
             method: 'POST',
             headers: {
                 'Content-Type':'application/json',
             },
-            body: JSON.stringify({'refresh':authTokens.refresh})
+            body: JSON.stringify({'refresh':authTokens?.refresh})
         })
 
         let data = await response.json()
+        console.log(data)
 
         if(response.status === 200){
             setAuthTokens(data)
@@ -79,6 +81,10 @@ export const AuthProvider = ({children}) => {
             logoutUser()
         }
 
+        // Refreshing Token on load
+        // if(loading){
+        //     setLoading(false)
+        // }
     }
 
 
@@ -90,16 +96,20 @@ export const AuthProvider = ({children}) => {
         logoutUser:logoutUser
     }
 
-
     // Instructions in useEffect did reload after authTokens, loading been changes
+    
     useEffect(()=>{
+        // Refreshing Token on load
+        // if(loading){
+        //     updateToken()
+        // }
 
-        let fourMinutes = 1000 * 60 * 4
+        let fourMinutes = 1000 * 60 * 4     // Warning: Also you need to set 4 minutes for ACCESS_TOKEN_LIFETIME in 'SETTINGS.py'
         let interval = setInterval(()=>{
             if(authTokens){
                 updateToken()
             }
-        }, fourMinutes)    // Rotate after 2 seconds
+        }, fourMinutes)    // Rotate after 4 Munites
 
         return ()=> clearInterval(interval)     // To override the current interval time
 
@@ -108,6 +118,7 @@ export const AuthProvider = ({children}) => {
 
     return (
         <AuthContext.Provider value={contextData}>
+            {/* {loading ? null : children} */}
             {children}
         </AuthContext.Provider>
     )

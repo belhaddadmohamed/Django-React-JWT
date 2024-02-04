@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 
-# I want to use MyTokenObtainPairView instead of -->  TokenObtainPairView for more token customization
+# I want to use MyTokenObtainPairView instead of -->  TokenObtainPairView to add some token customization
 from rest_framework_simplejwt.views import (
     # TokenObtainPairView,
     TokenRefreshView,

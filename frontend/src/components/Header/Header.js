@@ -19,6 +19,7 @@ const Header = () => {
       </ul>
        
       <h3>Hello {user ? user.username : ""}</h3>
+      <h4> {user ? user.id : ""} </h4>
     </>
   )
 }

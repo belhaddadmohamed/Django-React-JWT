@@ -31,6 +31,7 @@ def getRoutes(request):
     routes = [
         'api/token',
         'api/refresh',
+        'api/notes',
     ]
 
     return Response(routes)
